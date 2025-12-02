@@ -14,7 +14,10 @@ export default function Layout({ children }) {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.get(
-          `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/auth/me`,
+          `${
+            import.meta.env.VITE_API_URL ||
+            "https://code-review-szuc.onrender.com"
+          }/auth/me`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

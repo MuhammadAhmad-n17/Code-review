@@ -16,7 +16,8 @@ export default function Repositories() {
       try {
         const res = await axios.get(
           `${
-            import.meta.env.VITE_API_URL || "http://localhost:5000"
+            import.meta.env.VITE_API_URL ||
+            "https://code-review-szuc.onrender.com"
           }/api/github/repos`
         );
         setRepos(res.data || []);

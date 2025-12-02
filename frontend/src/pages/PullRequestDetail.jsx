@@ -14,7 +14,8 @@ export default function PullRequestDetail() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const base = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const base =
+      import.meta.env.VITE_API_URL || "https://code-review-szuc.onrender.com";
     const fetchFiles = async () => {
       try {
         const res = await axios.get(
@@ -34,7 +35,8 @@ export default function PullRequestDetail() {
     setReviewLoading(true);
     setError("");
     try {
-      const base = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const base =
+        import.meta.env.VITE_API_URL || "https://code-review-szuc.onrender.com";
       const res = await axios.post(`${base}/api/reviews`, {
         owner,
         repo,

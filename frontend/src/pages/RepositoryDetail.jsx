@@ -13,7 +13,8 @@ export default function RepositoryDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const base = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const base =
+      import.meta.env.VITE_API_URL || "https://code-review-szuc.onrender.com";
     const fetchData = async () => {
       try {
         const [prRes, commitsRes] = await Promise.all([

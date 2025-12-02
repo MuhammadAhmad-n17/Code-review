@@ -2,7 +2,8 @@ import { useState } from "react";
 
 function App() {
   const handleGitHubLogin = () => {
-    const api = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const api =
+      import.meta.env.VITE_API_URL || "https://code-review-szuc.onrender.com";
     window.location.href = `${api}/auth/github`;
   };
 

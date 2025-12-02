@@ -14,7 +14,9 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const base = import.meta.env.VITE_API_URL || "http://localhost:5000";
+        const base =
+          import.meta.env.VITE_API_URL ||
+          "https://code-review-szuc.onrender.com";
         const token = localStorage.getItem("token");
         const userData = JSON.parse(localStorage.getItem("user") || "{}");
 

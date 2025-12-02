@@ -22,7 +22,9 @@ export default function AuthSuccess() {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
         // Fetch user data
-        const base = import.meta.env.VITE_API_URL || "http://localhost:5000";
+        const base =
+          import.meta.env.VITE_API_URL ||
+          "https://code-review-szuc.onrender.com";
         const userRes = await axios.get(`${base}/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });

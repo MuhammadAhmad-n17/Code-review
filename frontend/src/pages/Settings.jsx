@@ -13,7 +13,10 @@ export default function Settings() {
     const fetchUser = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/auth/me`
+          `${
+            import.meta.env.VITE_API_URL ||
+            "https://code-review-szuc.onrender.com"
+          }/auth/me`
         );
         setUser(res.data);
       } catch (err) {

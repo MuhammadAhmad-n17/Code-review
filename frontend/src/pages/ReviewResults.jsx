@@ -13,7 +13,8 @@ export default function ReviewResults() {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    const base = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const base =
+      import.meta.env.VITE_API_URL || "https://code-review-szuc.onrender.com";
     const fetchReview = async () => {
       try {
         const token = localStorage.getItem("token");
