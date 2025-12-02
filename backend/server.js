@@ -71,6 +71,13 @@ const startServer = async () => {
       console.log(
         `🔗 OAuth Callback: ${process.env.SERVER_URL}/auth/github/callback`
       );
+
+      // Log auth configuration
+      if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
+        console.log("✅ GitHub OAuth configured");
+      } else {
+        console.warn("⚠️  GitHub OAuth not fully configured");
+      }
     });
   } catch (err) {
     console.error("❌ Failed to start server:", err);

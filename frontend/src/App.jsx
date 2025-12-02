@@ -1,6 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    // Check for error in URL params
+    const params = new URLSearchParams(window.location.search);
+    const errorMsg = params.get("error");
+    if (errorMsg) {
+      setError(errorMsg);
+      // Clear error from URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   const handleGitHubLogin = () => {
     const api =
       import.meta.env.VITE_API_URL || "https://code-review-szuc.onrender.com";
@@ -43,6 +56,15 @@ function App() {
 
           {/* Auth Card */}
           <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl mb-8">
+            {/* Error Alert */}
+            {error && (
+              <div className="mb-6 bg-red-500/20 border border-red-500 rounded-lg p-4">
+                <p className="text-red-200 text-sm font-medium">
+                  <span className="font-bold">Authentication Error:</span>{" "}
+                  {error}
+                </p>
+              </div>
+            )}
             <div className="space-y-6">
               {/* GitHub Button */}
               <button
@@ -72,7 +94,7 @@ function App() {
               </div>
 
               {/* Demo Button */}
-              <button className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+              <button className="w-full flex items-center justify-center gap-3 bg-linear-to-r from-purple-600 to-indigo-600 text-white font-semibold py-3 px-6 rounded-xl hover:shadow-xl transition-all duration-200 transform hover:scale-105">
                 <svg
                   className="w-5 h-5"
                   viewBox="0 0 24 24"

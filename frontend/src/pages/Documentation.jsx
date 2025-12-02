@@ -33,10 +33,10 @@ export default function Documentation() {
     try {
       setGenerating(`${owner}/${repo}`);
 
-      const res = await api.post(
-        `/api/github/repos/generate-documentation`,
-        { owner, repo }
-      );
+      const res = await api.post(`/api/github/repos/generate-documentation`, {
+        owner,
+        repo,
+      });
 
       setDocumentation(res.data);
       setSelectedRepo(`${owner}/${repo}`);

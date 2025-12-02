@@ -13,21 +13,16 @@ export default function AuthSuccess() {
         const token = params.get("token");
 
         if (!token) {
+          console.error("No token received from auth callback");
           navigate("/", { replace: true });
           return;
         }
 
         // Store token
         localStorage.setItem("token", token);
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-        // Fetch user data
-        const base =
-          import.meta.env.VITE_API_URL ||
-          "https://code-review-szuc.onrender.com";
-        const userRes = await axios.get(`${base}/auth/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        // Fetch user data using the api instance
+        const userRes = await api.get(`/auth/me`);
 
         // Store user data
         localStorage.setItem("user", JSON.stringify(userRes.data));
