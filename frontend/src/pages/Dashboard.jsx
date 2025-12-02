@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axiosConfig.js";
 import Layout from "../components/Layout";
 import { useTheme } from "../context/ThemeContext";
 
@@ -14,17 +14,11 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const base =
-          import.meta.env.VITE_API_URL ||
-          "https://code-review-szuc.onrender.com";
-        const token = localStorage.getItem("token");
         const userData = JSON.parse(localStorage.getItem("user") || "{}");
 
         setUser(userData);
 
-        const statsRes = await axios.get(`${base}/api/reviews/stats`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const statsRes = await api.get(`/api/reviews/stats`);
 
         setStats(statsRes.data);
       } catch (err) {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axiosConfig.js";
 import Layout from "../components/Layout";
 import { useTheme } from "../context/ThemeContext";
 
@@ -14,12 +14,7 @@ export default function Repositories() {
   useEffect(() => {
     const fetchRepos = async () => {
       try {
-        const res = await axios.get(
-          `${
-            import.meta.env.VITE_API_URL ||
-            "https://code-review-szuc.onrender.com"
-          }/api/github/repos`
-        );
+        const res = await api.get(`/api/github/repos`);
         setRepos(res.data || []);
       } catch (err) {
         console.error("Failed to fetch repos", err);

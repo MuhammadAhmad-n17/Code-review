@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axiosConfig.js";
 
 export default function AuthSuccess() {
   const navigate = useNavigate();

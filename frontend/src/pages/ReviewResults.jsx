@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axiosConfig.js";
 import Layout from "../components/Layout";
 import { useTheme } from "../context/ThemeContext";
 
@@ -13,14 +13,9 @@ export default function ReviewResults() {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    const base =
-      import.meta.env.VITE_API_URL || "https://code-review-szuc.onrender.com";
     const fetchReview = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get(`${base}/api/reviews/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get(`/api/reviews/${id}`);
         setReview(res.data);
       } catch (err) {
         console.error("Failed to fetch review", err);

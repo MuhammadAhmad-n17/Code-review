@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/axiosConfig.js";
 import ReactMarkdown from "react-markdown";
 import Layout from "../components/Layout";
 import { useTheme } from "../context/ThemeContext";
@@ -19,12 +19,7 @@ export default function Documentation() {
 
   const fetchRepositories = async () => {
     try {
-      const base = import.meta.env.VITE_API_URL || "http://localhost:5000";
-      const token = localStorage.getItem("token");
-
-      const res = await axios.get(`${base}/api/github/repos`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get(`/api/github/repos`);
 
       setRepos(res.data || []);
     } catch (err) {
@@ -37,15 +32,10 @@ export default function Documentation() {
   const handleGenerateDocumentation = async (owner, repo) => {
     try {
       setGenerating(`${owner}/${repo}`);
-      const base = import.meta.env.VITE_API_URL || "http://localhost:5000";
-      const token = localStorage.getItem("token");
 
-      const res = await axios.post(
-        `${base}/api/github/repos/generate-documentation`,
-        { owner, repo },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+      const res = await api.post(
+        `/api/github/repos/generate-documentation`,
+        { owner, repo }
       );
 
       setDocumentation(res.data);

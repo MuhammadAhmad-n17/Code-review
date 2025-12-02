@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axiosConfig.js";
 import Layout from "../components/Layout";
 import { useTheme } from "../context/ThemeContext";
 
@@ -14,12 +14,10 @@ export default function PullRequestDetail() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const base =
-      import.meta.env.VITE_API_URL || "https://code-review-szuc.onrender.com";
     const fetchFiles = async () => {
       try {
-        const res = await axios.get(
-          `${base}/api/github/repos/${owner}/${repo}/pull-requests/${number}/files`
+        const res = await api.get(
+          `/api/github/repos/${owner}/${repo}/pull-requests/${number}/files`
         );
         setFiles(res.data || []);
       } catch (err) {
@@ -35,9 +33,7 @@ export default function PullRequestDetail() {
     setReviewLoading(true);
     setError("");
     try {
-      const base =
-        import.meta.env.VITE_API_URL || "https://code-review-szuc.onrender.com";
-      const res = await axios.post(`${base}/api/reviews`, {
+      const res = await api.post(`/api/reviews`, {
         owner,
         repo,
         pullNumber: Number(number),

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axiosConfig.js";
 import Layout from "../components/Layout";
 import { useTheme } from "../context/ThemeContext";
 
@@ -16,21 +16,19 @@ export default function CommitDetail() {
   const [reviewHistory, setReviewHistory] = useState([]);
 
   useEffect(() => {
-    const base = import.meta.env.VITE_API_URL || "http://localhost:5000";
     const fetchData = async () => {
       try {
         const [filesRes, token] = [
-          await axios.get(
-            `${base}/api/github/repos/${owner}/${repo}/commits/${sha}/files`
+          await api.get(
+            `/api/github/repos/${owner}/${repo}/commits/${sha}/files`
           ),
           localStorage.getItem("token"),
         ];
         setFiles(filesRes.data || []);
 
         // Fetch review history for this commit
-        const historyRes = await axios.get(
-          `${base}/api/reviews?owner=${owner}&repo=${repo}&commitSha=${sha}`,
-          { headers: { Authorization: `Bearer ${token}` } }
+        const historyRes = await api.get(
+          `/api/reviews?owner=${owner}&repo=${repo}&commitSha=${sha}`
         );
         setReviewHistory(historyRes.data || []);
 
@@ -50,8 +48,7 @@ export default function CommitDetail() {
     setReviewLoading(true);
     setError("");
     try {
-      const base = import.meta.env.VITE_API_URL || "http://localhost:5000";
-      const res = await axios.post(`${base}/api/reviews/commit`, {
+      const res = await api.post(`/api/reviews/commit`, {
         owner,
         repo,
         sha,

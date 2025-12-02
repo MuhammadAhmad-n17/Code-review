@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axiosConfig.js";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Layout({ children }) {
@@ -40,7 +40,7 @@ export default function Layout({ children }) {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    delete axios.defaults.headers.common["Authorization"];
+    delete api.defaults.headers.common["Authorization"];
     navigate("/");
   };
 
