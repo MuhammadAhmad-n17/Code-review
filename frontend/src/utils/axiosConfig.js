@@ -1,9 +1,12 @@
 import axios from "axios";
 
 // Configure axios defaults
+const apiUrl = import.meta.env.VITE_API_URL || "https://code-review-szuc.onrender.com";
+console.log("🔧 Axios Config - API URL:", apiUrl);
+console.log("🔧 Environment Variables:", import.meta.env);
+
 const api = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_URL || "https://code-review-szuc.onrender.com",
+  baseURL: apiUrl,
   withCredentials: true, // Send cookies with requests
   headers: {
     "Content-Type": "application/json",

@@ -27,7 +27,7 @@ export default function AuthSuccess() {
 
         // Fetch user data with explicit Authorization header
         console.log("📡 Calling /auth/me endpoint with token...");
-        
+
         const userRes = await api.get(`/auth/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -49,7 +49,7 @@ export default function AuthSuccess() {
         console.error("   Status:", err.response?.status);
         console.error("   Data:", err.response?.data);
         console.error("   Full error:", err);
-        
+
         localStorage.removeItem("token");
         navigate("/", { replace: true });
       }
