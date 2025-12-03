@@ -18,19 +18,28 @@ export default function AuthSuccess() {
           return;
         }
 
-        // Store token
+        // Store token FIRST
         localStorage.setItem("token", token);
 
-        // Fetch user data using the api instance
-        const userRes = await api.get(`/auth/me`);
+        // Create a temporary axios instance with the token in the header
+        // to ensure it's sent with this specific request
+        const userRes = await api.get(`/auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         // Store user data
         localStorage.setItem("user", JSON.stringify(userRes.data));
 
+        console.log("✅ Authentication successful:", userRes.data);
+
         // Redirect to dashboard
         setTimeout(() => navigate("/dashboard", { replace: true }), 1500);
       } catch (err) {
-        console.error("Authentication failed:", err);
+        console.error("❌ Authentication failed:", err.message);
+        console.error("Full error:", err);
+        localStorage.removeItem("token");
         navigate("/", { replace: true });
       }
     };
