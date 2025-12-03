@@ -12,33 +12,44 @@ export default function AuthSuccess() {
         const params = new URLSearchParams(search);
         const token = params.get("token");
 
+        console.log("🔍 AuthSuccess Page - URL search params:", search);
+        console.log("🔑 Token extracted:", token ? "✓ Found" : "✗ Not found");
+
         if (!token) {
-          console.error("No token received from auth callback");
+          console.error("❌ No token received from auth callback");
           navigate("/", { replace: true });
           return;
         }
 
         // Store token FIRST
         localStorage.setItem("token", token);
+        console.log("💾 Token stored in localStorage");
 
-        // Create a temporary axios instance with the token in the header
-        // to ensure it's sent with this specific request
+        // Fetch user data with explicit Authorization header
+        console.log("📡 Calling /auth/me endpoint with token...");
+        
         const userRes = await api.get(`/auth/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
+        console.log("✅ /auth/me response received:", userRes.data);
+
         // Store user data
         localStorage.setItem("user", JSON.stringify(userRes.data));
-
-        console.log("✅ Authentication successful:", userRes.data);
+        console.log("💾 User data stored in localStorage");
 
         // Redirect to dashboard
+        console.log("🚀 Redirecting to dashboard in 1.5 seconds...");
         setTimeout(() => navigate("/dashboard", { replace: true }), 1500);
       } catch (err) {
-        console.error("❌ Authentication failed:", err.message);
-        console.error("Full error:", err);
+        console.error("❌ Authentication failed - Error details:");
+        console.error("   Message:", err.message);
+        console.error("   Status:", err.response?.status);
+        console.error("   Data:", err.response?.data);
+        console.error("   Full error:", err);
+        
         localStorage.removeItem("token");
         navigate("/", { replace: true });
       }
