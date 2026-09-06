@@ -2,28 +2,24 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import api from "../utils/axiosConfig.js";
 import { useTheme } from "../context/ThemeContext";
+import AnimatedBackground from "./AnimatedBackground";
 
 export default function Layout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { isDark } = useTheme();
   const [user, setUser] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(
-          `${
-            import.meta.env.VITE_API_URL ||
-            "https://code-review-szuc.onrender.com"
-          }/auth/me`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const res = await api.get("/auth/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setUser(res.data);
       } catch (err) {
         console.error("Failed to fetch user", err);
@@ -57,23 +53,39 @@ export default function Layout({ children }) {
   };
 
   return (
-    <div className={`flex h-screen ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
+    <div
+      className={`relative flex min-h-screen ${
+        isDark ? "bg-carbon" : "bg-slate-50"
+      }`}
+    >
+      {isDark && <AnimatedBackground />}
+      
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+      
       {/* Sidebar */}
       <aside
-        className={`w-64 ${
-          isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
-        } border-r flex flex-col shadow-sm transition-colors`}
+        className={`fixed lg:relative z-50 w-64 h-full ${
+          isDark ? "bg-carbon-50 border-carbon-100" : "bg-white border-slate-200"
+        } border-r flex flex-col shadow-sm transition-all duration-300 ${
+          mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
       >
         {/* Brand */}
         <div
           className={`p-6 border-b ${
-            isDark ? "border-slate-700" : "border-slate-200"
+            isDark ? "border-carbon-100" : "border-slate-200"
           }`}
         >
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-linear-to-br from-purple-600 to-indigo-600 rounded-lg">
+            <div className={`p-2 rounded-lg ${isDark ? "bg-copper" : "bg-linear-to-br from-purple-600 to-indigo-600"}`}>
               <svg
-                className="w-5 h-5 text-white"
+                className={`w-5 h-5 ${isDark ? "text-carbon" : "text-white"}`}
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
@@ -83,17 +95,17 @@ export default function Layout({ children }) {
             <div>
               <h1
                 className={`text-xl font-bold ${
-                  isDark ? "text-white" : "text-slate-900"
+                  isDark ? "text-neon-text" : "text-slate-900"
                 }`}
               >
                 CodeReview
               </h1>
               <p
                 className={`text-xs ${
-                  isDark ? "text-slate-400" : "text-slate-500"
+                  isDark ? "text-neon-muted" : "text-slate-500"
                 }`}
               >
-                AI Assistant
+                Premium Edition
               </p>
             </div>
           </div>
@@ -103,16 +115,17 @@ export default function Layout({ children }) {
         <nav className="flex-1 p-4 space-y-2">
           <Link
             to="/dashboard"
+            onClick={() => setMobileMenuOpen(false)}
             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
               isActive("/dashboard")
                 ? `${
                     isDark
-                      ? "bg-purple-900/40 text-purple-400"
-                      : "bg-linear-to-r from-purple-50 to-indigo-50 text-purple-700"
-                  } border-l-4 border-purple-600`
+                      ? "bg-lime/20 text-lime border-l-4 border-lime"
+                      : "bg-linear-to-r from-purple-50 to-indigo-50 text-purple-700 border-l-4 border-purple-600"
+                  }`
                 : `${
                     isDark
-                      ? "text-slate-400 hover:bg-slate-700/50"
+                      ? "text-neon-muted hover:bg-carbon-300 hover:text-neon-text"
                       : "text-slate-600 hover:bg-slate-100"
                   }`
             }`}
@@ -125,16 +138,17 @@ export default function Layout({ children }) {
 
           <Link
             to="/repositories"
+            onClick={() => setMobileMenuOpen(false)}
             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
               isActive("/repositories")
                 ? `${
                     isDark
-                      ? "bg-purple-900/40 text-purple-400"
-                      : "bg-linear-to-r from-purple-50 to-indigo-50 text-purple-700"
-                  } border-l-4 border-purple-600`
+                      ? "bg-lime/20 text-lime border-l-4 border-lime"
+                      : "bg-linear-to-r from-purple-50 to-indigo-50 text-purple-700 border-l-4 border-purple-600"
+                  }`
                 : `${
                     isDark
-                      ? "text-slate-400 hover:bg-slate-700/50"
+                      ? "text-neon-muted hover:bg-carbon-300 hover:text-neon-text"
                       : "text-slate-600 hover:bg-slate-100"
                   }`
             }`}
@@ -146,17 +160,41 @@ export default function Layout({ children }) {
           </Link>
 
           <Link
+            onClick={() => setMobileMenuOpen(false)}
+            to="/advanced-testing"
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+              isActive("/advanced-testing") || location.pathname.startsWith("/advanced-testing")
+                ? `${
+                    isDark
+                      ? "bg-lime/20 text-lime border-l-4 border-lime"
+                      : "bg-linear-to-r from-purple-50 to-indigo-50 text-purple-700 border-l-4 border-purple-600"
+                  }`
+                : `${
+                    isDark
+                      ? "text-neon-muted hover:bg-carbon-300 hover:text-neon-text"
+                      : "text-slate-600 hover:bg-slate-100"
+                  }`
+            }`}
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-3.5-3.5 1.41-1.41L10 14.17l4.59-4.59L16 11l-6 6z" />
+            </svg>
+            <span className="font-medium">Advanced Testing</span>
+          </Link>
+
+          <Link
+            onClick={() => setMobileMenuOpen(false)}
             to="/documentation"
             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
               isActive("/documentation")
                 ? `${
                     isDark
-                      ? "bg-purple-900/40 text-purple-400"
-                      : "bg-linear-to-r from-purple-50 to-indigo-50 text-purple-700"
-                  } border-l-4 border-purple-600`
+                      ? "bg-lime/20 text-lime border-l-4 border-lime"
+                      : "bg-linear-to-r from-purple-50 to-indigo-50 text-purple-700 border-l-4 border-purple-600"
+                  }`
                 : `${
                     isDark
-                      ? "text-slate-400 hover:bg-slate-700/50"
+                      ? "text-neon-muted hover:bg-carbon-300 hover:text-neon-text"
                       : "text-slate-600 hover:bg-slate-100"
                   }`
             }`}
@@ -168,17 +206,18 @@ export default function Layout({ children }) {
           </Link>
 
           <Link
+            onClick={() => setMobileMenuOpen(false)}
             to="/settings"
             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
               isActive("/settings")
                 ? `${
                     isDark
-                      ? "bg-purple-900/40 text-purple-400"
-                      : "bg-linear-to-r from-purple-50 to-indigo-50 text-purple-700"
-                  } border-l-4 border-purple-600`
+                      ? "bg-lime/20 text-lime border-l-4 border-lime"
+                      : "bg-linear-to-r from-purple-50 to-indigo-50 text-purple-700 border-l-4 border-purple-600"
+                  }`
                 : `${
                     isDark
-                      ? "text-slate-400 hover:bg-slate-700/50"
+                      ? "text-neon-muted hover:bg-carbon-300 hover:text-neon-text"
                       : "text-slate-600 hover:bg-slate-100"
                   }`
             }`}
@@ -194,7 +233,7 @@ export default function Layout({ children }) {
         <div
           className={`p-4 border-t ${
             isDark
-              ? "border-slate-700 text-slate-500"
+              ? "border-carbon-300 text-neon-muted"
               : "border-slate-200 text-slate-500"
           } text-center text-xs`}
         >
@@ -202,24 +241,25 @@ export default function Layout({ children }) {
         </div>
       </aside>
 
-      {/* Main Content */}
+      {/* MaonClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            in Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <header
           className={`h-16 ${
             isDark
-              ? "bg-slate-800 border-slate-700"
+              ? "bg-carbon-200 border-carbon-300"
               : "bg-white border-slate-200"
           } border-b flex items-center justify-between px-6 shadow-sm transition-colors`}
         >
           <button
             className={`p-2 ${
-              isDark ? "hover:bg-slate-700" : "hover:bg-slate-100"
+              isDark ? "hover:bg-carbon-300" : "hover:bg-slate-100"
             } rounded-lg transition-colors lg:hidden`}
           >
             <svg
               className={`w-6 h-6 ${
-                isDark ? "text-slate-400" : "text-slate-600"
+                isDark ? "text-neon-muted" : "text-slate-600"
               }`}
               viewBox="0 0 24 24"
               fill="currentColor"
@@ -231,7 +271,7 @@ export default function Layout({ children }) {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-linear-to-br from-purple-600 to-indigo-600 rounded-full flex items-center justify-center">
+                <div className={`w-10 h-10 ${isDark ? "bg-lime" : "bg-linear-to-br from-purple-600 to-indigo-600"} rounded-full flex items-center justify-center`}>
                   {user?.avatar ? (
                     <img
                       src={user.avatar}
@@ -239,7 +279,7 @@ export default function Layout({ children }) {
                       className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
-                    <span className="text-white text-sm font-bold">
+                    <span className={`text-sm font-bold ${isDark ? "text-carbon" : "text-white"}`}>
                       {getInitials(user?.name)}
                     </span>
                   )}
@@ -247,14 +287,14 @@ export default function Layout({ children }) {
                 <div className="hidden sm:block">
                   <div
                     className={`text-sm font-semibold ${
-                      isDark ? "text-white" : "text-slate-900"
+                      isDark ? "text-neon-text" : "text-slate-900"
                     }`}
                   >
                     {user?.name || "Loading..."}
                   </div>
                   <div
                     className={`text-xs ${
-                      isDark ? "text-slate-400" : "text-slate-500"
+                      isDark ? "text-neon-muted" : "text-slate-500"
                     }`}
                   >
                     {user?.email || ""}
@@ -266,7 +306,7 @@ export default function Layout({ children }) {
               onClick={handleLogout}
               className={`p-2 ${
                 isDark
-                  ? "text-slate-400 hover:bg-red-900/30 hover:text-red-400"
+                  ? "text-neon-muted hover:bg-neon-error/20 hover:text-neon-error"
                   : "text-slate-600 hover:bg-red-50 hover:text-red-600"
               } rounded-lg transition-colors`}
               title="Logout"
@@ -280,8 +320,8 @@ export default function Layout({ children }) {
 
         {/* Page Content */}
         <main
-          className={`flex-1 overflow-auto ${
-            isDark ? "bg-slate-900" : "bg-slate-50"
+          className={`relative z-10 flex-1 overflow-auto ${
+            isDark ? "bg-transparent" : "bg-slate-50"
           } transition-colors`}
         >
           {children}
